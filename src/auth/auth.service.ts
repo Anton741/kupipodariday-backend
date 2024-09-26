@@ -18,7 +18,9 @@ export class AuthService {
   }
 
   async validatePassword(username: string, password: string) {
-    const user = await this.usersService.findByUsername(username) as CreateUserDto;
+    const user = (await this.usersService.findByUsername(
+      username,
+    )) as CreateUserDto;
     /* В идеальном случае пароль обязательно должен быть захэширован */
     const areEqual = await compare(password, user.password);
 

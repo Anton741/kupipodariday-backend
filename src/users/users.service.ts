@@ -39,7 +39,10 @@ export class UsersService {
     return users;
   }
 
-  async findByUsername(username: string, withPassport = true): Promise<CreateUserDto | Omit<CreateUserDto, "password">>{
+  async findByUsername(
+    username: string,
+    withPassport = true,
+  ): Promise<CreateUserDto | Omit<CreateUserDto, 'password'>> {
     const user = await this.userRepository.findOne({ where: { username } });
     if (!withPassport) {
       const { password, ...restData } = user;
