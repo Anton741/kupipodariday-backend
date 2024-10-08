@@ -21,15 +21,15 @@ export class AuthService {
     const user = (await this.usersService.findByUsername(
       username,
     )) as CreateUserDto;
-    /* В идеальном случае пароль обязательно должен быть захэширован */
-    const areEqual = await compare(password, user.password);
-
     if (user) {
-      const { password, ...result } = user;
+      const areEqual = await compare(password, user.password);
 
-      return result;
+      if (areEqual) {
+        const { password, ...result } = user;
+
+        return result;
+      }
     }
-
     return null;
   }
 }

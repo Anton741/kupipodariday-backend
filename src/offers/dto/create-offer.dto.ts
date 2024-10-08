@@ -3,8 +3,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Wish } from 'src/wishes/entities/wish.entity';
 
 export class CreateOfferDto {
-  user: User;
-  item: Wish;
+  itemId: number;
 
   @IsDecimal()
   amount: number;

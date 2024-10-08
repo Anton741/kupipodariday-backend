@@ -8,20 +8,22 @@ import {
   Delete,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { WishlistsService } from './wishlists.service';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { LocalGuard } from 'src/guards/local.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('wishlists')
 export class WishlistsController {
   constructor(private readonly wishlistsService: WishlistsService) {}
 
-  @UseGuards(LocalGuard)
   @Post()
-  create(@Body() createWishlistDto: CreateWishlistDto) {
-    return this.wishlistsService.create(createWishlistDto);
+  create(@Body() createWishlistDto: CreateWishlistDto, @Req() req: any) {
+    return this.wishlistsService.create(createWishlistDto, req.userId);
   }
 
   @Get()
@@ -31,7 +33,7 @@ export class WishlistsController {
 
   @Get(':id')
   findOne(@Param('id') id: string, @Query() query: any) {
-    return this.wishlistsService.findOne(+id, query);
+    return this.wishlistsService.findOne({ id, ...query });
   }
 
   @Patch(':id')

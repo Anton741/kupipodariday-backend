@@ -1,4 +1,5 @@
 import { IsString, Length, IsUrl } from 'class-validator';
+import { Wish } from 'src/wishes/entities/wish.entity';
 // import { Wish } from 'src/wishes/entities/wish.entity';
 
 export class CreateWishlistDto {
@@ -13,5 +14,5 @@ export class CreateWishlistDto {
   @IsUrl()
   image: string;
 
-  // items: Wish[];
+  itemsId: number[];
 }

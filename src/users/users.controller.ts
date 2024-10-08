@@ -14,15 +14,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 // import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 
-// @UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  // @Post()
-  // create(@Body() createUserDto: CreateUserDto) {
-  //   return this.usersService.create(createUserDto);
-  // }
 
   @Get()
   findMany(@Query() query: any) {
@@ -31,8 +26,32 @@ export class UsersController {
 
   @Get('/me')
   findMe(@Req() req: any) {
-    console.log(req.user);
-    // return this.usersService.findMany(query);
+    return this.usersService.findOne({ id: req.userId });
+  }
+
+  @Get('/me/wishes')
+  async findMeWishes(@Req() req: any) {
+    const user = await this.usersService.findOne(
+      { id: req.userId },
+      {
+        wishes: {
+          offers: { user: { wishes: true, offers: true, wishlists: true } },
+          owner: true,
+        },
+      },
+    );
+    return user?.wishes ? user?.wishes : [];
+  }
+
+  @Patch('/me')
+  update(@Req() req: any, @Body() updateUserDto: UpdateUserDto) {
+    const userId = req.userId;
+    return this.usersService.updateOne(userId, updateUserDto);
+  }
+
+  @Get('/find')
+  findOne(@Body() query: any) {
+    return this.usersService.findOne(query);
   }
 
   @Get('/:username')
@@ -40,14 +59,16 @@ export class UsersController {
     return this.usersService.findByUsername(username, false);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number, @Body() query: any) {
-    return this.usersService.findOne(id, query);
-  }
+  @Get('/:username/wishes')
+  async findByUsernameWishes(@Param('username') username: string) {
+    const user = await this.usersService.findByUsername(username, false, [
+      'wishes',
+    ]);
+    if (user && user?.wishes) {
+      return user.wishes;
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateOne(id, updateUserDto);
+    return [];
   }
 
   @Delete(':id')

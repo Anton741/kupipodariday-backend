@@ -4,9 +4,14 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  ManyToMany,
+  JoinColumn,
   // OneToMany,
 } from 'typeorm';
 import { Length } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
+import { Wish } from 'src/wishes/entities/wish.entity';
 // import { Wish } from 'src/wishes/entities/wish.entity';
 
 @Entity()
@@ -30,7 +35,9 @@ export class Wishlist {
   @Column()
   image: string;
 
-  // @Column()
-  // @OneToMany(() => Wish, (wish) => wish.id)
-  // items: Wish[];
+  @ManyToOne(() => User, (user) => user.wishlists)
+  user: User;
+
+  @ManyToMany(() => Wish, (wish) => wish.wishlists)
+  items: Wish[];
 }

@@ -7,10 +7,12 @@ import {
   ManyToOne,
   ManyToMany,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
-import { Length } from 'class-validator';
+import { IsInt, IsUrl, Length } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
 import { Offer } from 'src/offers/entities/offer.entity';
+import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
 
 @Entity()
 export class Wish {
@@ -28,15 +30,20 @@ export class Wish {
   name: string;
 
   @Column()
+  @IsUrl()
   link: string;
 
   @Column()
+  @IsUrl()
   image: string;
 
   @Column()
+  @IsInt()
   price: number;
 
-  @Column({ readonly: true })
+  @Column({
+    default: 0,
+  })
   raised: number;
 
   @Column()
@@ -47,8 +54,11 @@ export class Wish {
   @JoinColumn()
   owner: User;
 
-  @ManyToMany(() => Offer, (offer) => offer.item)
+  @OneToMany(() => Offer, (offer) => offer.item)
   offers: Offer[];
+
+  @ManyToMany(() => Wishlist, (list) => list.items)
+  wishlists: Wishlist[];
 
   @Column({ type: 'int', default: 0 })
   copied: number;

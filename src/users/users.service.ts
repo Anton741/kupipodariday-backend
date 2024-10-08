@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { genSalt, hash } from 'bcrypt';
+import { isEmpty } from 'ramda';
 
 @Injectable()
 export class UsersService {
@@ -12,8 +13,10 @@ export class UsersService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
   async create(createUserDto: CreateUserDto) {
     const { password, ...userData } = createUserDto;
+
     const salt = await genSalt(10);
     const hashPassword = await hash(password, salt);
     return this.userRepository.save({ password: hashPassword, ...userData });
@@ -25,9 +28,19 @@ export class UsersService {
   //   });
   // }
 
-  async findOne(id: number, query: any) {
-    const user = await this.userRepository.findOne({ where: { id, ...query } });
-    return user;
+  async findOne(query: any, relations?: any) {
+    if (isEmpty(query)) {
+      throw new BadRequestException('Передайте параметры поиска');
+    }
+    const user = await this.userRepository.findOne({
+      where: { ...query },
+      relations: relations,
+    });
+    if (user) {
+      const { password, ...restData } = user;
+      return restData;
+    }
+    throw new BadRequestException('Пользователь не найден');
   }
 
   async findMany(query: any) {
@@ -42,17 +55,24 @@ export class UsersService {
   async findByUsername(
     username: string,
     withPassport = true,
-  ): Promise<CreateUserDto | Omit<CreateUserDto, 'password'>> {
-    const user = await this.userRepository.findOne({ where: { username } });
-    if (!withPassport) {
-      const { password, ...restData } = user;
-      return restData;
+    relations = [],
+  ): Promise<UpdateUserDto | Omit<UpdateUserDto, 'password'>> {
+    const user = await this.userRepository.findOne({
+      where: { username },
+      relations: relations,
+    });
+    if (user) {
+      if (!withPassport) {
+        const { password, ...restData } = user;
+        return restData;
+      }
+      return user;
     }
-    return user;
+
+    throw new BadRequestException('Пользователь не найден');
   }
 
   async updateOne(id: number, updateUserDto: UpdateUserDto) {
-    console.log(updateUserDto, 'UpdateUserDto');
     if (updateUserDto?.password) {
       const { password, ...userData } = updateUserDto;
       const salt = await genSalt(10);
