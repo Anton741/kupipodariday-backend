@@ -20,7 +20,6 @@ import { AuthGuard } from 'src/guards/auth.guard';
 export class WishesController {
   constructor(private readonly wishesService: WishesService) {}
 
-  // @UseGuards(LocalGuard)
   @Post()
   create(@Req() req: any, @Body() createWishDto: CreateWishDto) {
     return this.wishesService.create(createWishDto, req.userId);
@@ -32,7 +31,7 @@ export class WishesController {
   }
 
   @Get()
-  findAll(@Req() req: any) {
+  findAll() {
     return this.wishesService.findAll();
   }
 

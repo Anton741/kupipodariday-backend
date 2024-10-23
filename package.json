@@ -1,8 +1,8 @@
 {
   "name": "kupipodariday",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Сервис вишлистов КупиПодариДай",
+  "author": "Anton G",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

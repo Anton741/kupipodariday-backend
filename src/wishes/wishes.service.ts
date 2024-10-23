@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,8 +20,14 @@ export class WishesService {
     return this.wishRepository.save({ ...createWishDto, owner: user });
   }
 
-  findAll() {
-    return this.wishRepository.find();
+  async findAll() {
+    const wishes = await this.wishRepository.find({
+      order: { id: 'DESC' },
+    });
+    if (wishes.length > 40) {
+      return wishes.slice(0, 40);
+    }
+    return wishes;
   }
 
   async lastEntity() {
@@ -33,7 +35,13 @@ export class WishesService {
       order: { id: 'DESC' },
       relations: { owner: true, offers: { user: true, item: true } },
     });
-    return wishes.length ? wishes[0] : {};
+    if (!isEmpty(wishes)) {
+      if (wishes.length > 40) {
+        return wishes.slice(0, 40);
+      }
+      return wishes;
+    }
+    return [];
   }
 
   async firstEntity() {

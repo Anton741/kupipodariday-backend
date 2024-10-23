@@ -12,11 +12,8 @@ import {
 } from '@nestjs/common';
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
-import { LocalGuard } from 'src/guards/local.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
 
-// @UseGuards(LocalGuard)
 @UseGuards(AuthGuard)
 @Controller('offers')
 export class OffersController {
