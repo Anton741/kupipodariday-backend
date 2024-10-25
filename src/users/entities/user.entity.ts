@@ -1,14 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import {
   IsArray,
-  IsDateString,
   IsDefined,
   IsEmail,
   IsString,
@@ -20,20 +12,10 @@ import { Wish } from 'src/wishes/entities/wish.entity';
 import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
 import { Offer } from 'src/offers/entities/offer.entity';
 import { Type } from 'class-transformer';
+import { BaseEntity } from 'src/share/baseEntity';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @IsDateString()
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @IsDateString()
-  @UpdateDateColumn()
-  updatedAt: Date;
-
+export class User extends BaseEntity {
   @IsString()
   @Column()
   username: string;

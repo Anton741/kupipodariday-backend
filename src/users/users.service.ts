@@ -22,12 +22,6 @@ export class UsersService {
     return this.userRepository.save({ password: hashPassword, ...userData });
   }
 
-  // findAll() {
-  //   return this.userRepository.find({
-  //     relations: ['wishes'],
-  //   });
-  // }
-
   async findOne(query: any, relations?: any) {
     if (isEmpty(query)) {
       throw new BadRequestException('Передайте параметры поиска');
@@ -43,13 +37,24 @@ export class UsersService {
     throw new BadRequestException('Пользователь не найден');
   }
 
-  async findMany(query: any) {
-    const { username, email } = query;
-    const users = await this.userRepository.find({
-      where: [{ username }, { email }],
-      relations: ['wishes'],
-    });
-    return users;
+  async findMany({ query }: { query: string }, relations?: any) {
+    let users;
+    if (isEmpty(query)) {
+      users = await this.userRepository.find();
+    } else {
+      users = await this.userRepository.find({
+        where: { username: query },
+        relations: relations,
+      });
+    }
+
+    if (users) {
+      return users.map((user) => {
+        const { password, ...restData } = user;
+        return restData;
+      });
+    }
+    return [];
   }
 
   async findByUsername(

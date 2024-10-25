@@ -1,4 +1,10 @@
-import { IsString, Length, IsUrl, IsNumber } from 'class-validator';
+import {
+  IsString,
+  Length,
+  IsUrl,
+  IsNumber,
+  IsNumberString,
+} from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
 
 export class CreateWishDto {
@@ -16,7 +22,7 @@ export class CreateWishDto {
   price: number;
 
   @IsNumber()
-  raised: number;
+  raised: number = 0;
 
   @IsString()
   @Length(1, 1024)

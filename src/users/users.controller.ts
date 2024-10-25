@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Query,
   Req,
   UseGuards,
@@ -18,11 +19,6 @@ import { AuthGuard } from 'src/guards/auth.guard';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Get()
-  findMany(@Query() query: any) {
-    return this.usersService.findMany(query);
-  }
 
   @Get('/me')
   findMe(@Req() req: any) {
@@ -49,9 +45,9 @@ export class UsersController {
     return this.usersService.updateOne(userId, updateUserDto);
   }
 
-  @Get('/find')
-  findOne(@Body() query: any) {
-    return this.usersService.findOne(query);
+  @Post('/find')
+  findMany(@Body() query: { query: string }) {
+    return this.usersService.findMany(query);
   }
 
   @Get('/:username')

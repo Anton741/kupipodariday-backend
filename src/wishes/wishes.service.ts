@@ -49,7 +49,7 @@ export class WishesService {
       order: { id: 'ASC' },
       relations: { owner: true, offers: { user: true, item: true } },
     });
-    return wishes.length ? wishes[0] : {};
+    return wishes.length ? wishes : [];
   }
 
   async findOne(query?: any, relations?: any, userId?: number) {
