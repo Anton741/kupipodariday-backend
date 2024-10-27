@@ -61,15 +61,7 @@ export class WishesService {
       relations: relations,
     });
     if (wish) {
-      if (wish.owner.id === userId) {
-        return wish;
-      } else {
-        return {
-          id: wish.id,
-          description: wish.description,
-          offers: wish.offers,
-        };
-      }
+      return wish;
     }
 
     throw new BadRequestException('Подарок с таким id не найден');
@@ -121,7 +113,14 @@ export class WishesService {
     await this.wishRepository.update(wishId, { raised: offerAmount });
   }
 
-  findByIds(ids: number[]) {
-    return this.wishRepository.findByIds(ids);
+  async findByIds(ids: number[], relations?: any) {
+    return Promise.all(
+      ids.map(async (id) => {
+        return await this.wishRepository.findOne({
+          where: { id },
+          relations: relations,
+        });
+      }),
+    );
   }
 }

@@ -16,7 +16,7 @@ import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 
 @UseGuards(AuthGuard)
-@Controller('wishlists')
+@Controller('wishlistlists')
 export class WishlistsController {
   constructor(private readonly wishlistsService: WishlistsService) {}
 
@@ -32,7 +32,10 @@ export class WishlistsController {
 
   @Get(':id')
   findOne(@Param('id') id: string, @Query() query: any) {
-    return this.wishlistsService.findOne({ id, ...query });
+    return this.wishlistsService.findOne(
+      { id, ...query },
+      { user: true, items: { owner: true } },
+    );
   }
 
   @Patch(':id')

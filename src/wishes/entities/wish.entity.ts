@@ -5,6 +5,7 @@ import {
   ManyToMany,
   JoinColumn,
   OneToMany,
+  JoinTable,
 } from 'typeorm';
 import {
   IsArray,
@@ -70,6 +71,7 @@ export class Wish extends BaseEntity {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => Wishlist)
+  @JoinTable()
   @ManyToMany(() => Wishlist, (list) => list.items)
   wishlists: Wishlist[];
 

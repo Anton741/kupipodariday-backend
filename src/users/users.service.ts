@@ -43,7 +43,7 @@ export class UsersService {
       users = await this.userRepository.find();
     } else {
       users = await this.userRepository.find({
-        where: { username: query },
+        where: [{ username: query }, { email: query }],
         relations: relations,
       });
     }

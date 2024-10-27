@@ -22,8 +22,6 @@ export class Wishlist extends BaseEntity {
   name: string;
 
   @Column()
-  @IsString()
-  @Length(1, 1024)
   description: string;
 
   @Column()

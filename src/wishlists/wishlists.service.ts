@@ -18,7 +18,9 @@ export class WishlistsService {
   async create(createWishlistDto: CreateWishlistDto, userId: string) {
     const { itemsId, ...listData } = createWishlistDto;
     const user = await this.usersService.findOne({ id: userId });
-    const wishes = await this.wishesService.findByIds(itemsId);
+    const wishes = await this.wishesService.findByIds(itemsId, ['owner']);
+
+    console.log(wishes, 'wishes');
 
     return this.wisthlistRepository.save({
       items: wishes,
@@ -28,7 +30,7 @@ export class WishlistsService {
   }
 
   findAll() {
-    return this.wisthlistRepository.find();
+    return this.wisthlistRepository.find({ relations: ['items', 'user'] });
   }
 
   async findOne(query: any, relations?: any) {

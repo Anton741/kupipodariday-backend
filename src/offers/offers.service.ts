@@ -30,9 +30,11 @@ export class OffersService {
 
   async create(createOffer: CreateOfferDto, userId: number) {
     const { itemId, amount, ...offerData } = createOffer;
-    const wish = (await this.wishesService.findOne({ id: itemId }, [
-      'owner',
-    ])) as Wish;
+    const wish = (await this.wishesService.findOne(
+      { id: itemId },
+      ['owner'],
+      userId,
+    )) as Wish;
     const user = await this.usersService.findOne({ id: userId });
     if (userId === wish.owner.id) {
       throw new BadRequestException({

@@ -1,11 +1,9 @@
-import { IsBoolean, IsDecimal } from 'class-validator';
-import { User } from 'src/users/entities/user.entity';
-import { Wish } from 'src/wishes/entities/wish.entity';
+import { IsBoolean, IsNumber } from 'class-validator';
 
 export class CreateOfferDto {
   itemId: number;
 
-  @IsDecimal()
+  @IsNumber()
   amount: number;
 
   @IsBoolean()
